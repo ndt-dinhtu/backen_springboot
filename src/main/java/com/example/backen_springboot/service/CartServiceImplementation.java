@@ -2,27 +2,70 @@ package com.example.backen_springboot.service;
 
 import com.example.backen_springboot.exception.ProductException;
 import com.example.backen_springboot.model.Cart;
+import com.example.backen_springboot.model.CartItem;
+import com.example.backen_springboot.model.Product;
 import com.example.backen_springboot.model.User;
 import com.example.backen_springboot.repository.CartRepository;
 import com.example.backen_springboot.request.AddItemRequest;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public class CartServiceImplementation implements CartService{
+@Service
+@AllArgsConstructor
+public class CartServiceImplementation implements CartService {
 
     private CartRepository cartRepository;
     private CartItemService cartItemService;
+    private ProductService productService;
 
     @Override
     public Cart createCart(User user) {
-        return null;
+        Cart cart = new Cart();
+        cart.setUser(user);
+        return cartRepository.save(cart);
     }
 
     @Override
     public String addCartItem(Long userId, AddItemRequest req) throws ProductException {
-        return "";
+        Cart cart = cartRepository.findByUserId(userId);
+        Product product = productService.findProductById(req.getProductId());
+        CartItem isPresent = cartItemService.isCartItemExist(cart, product, req.getSize(), userId);
+
+        if (isPresent == null) {
+
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct(product);
+            cartItem.setCart(cart);
+            cartItem.setQuantity(req.getQuantity());
+            cartItem.setUserId(userId);
+            int price = req.getQuantity() * product.getDiscountedPrice();
+            cartItem.setPrice(price);
+            cartItem.setSize(req.getSize());
+            CartItem createdCartItem = cartItemService.createCartItem(cartItem);
+            cart.getCartItems().add(createdCartItem);
+
+        }
+        return "Add to cart successfully";
     }
 
     @Override
     public Cart findUserCart(Long userId) {
-        return null;
+        Cart cart = cartRepository.findByUserId(userId);
+        int totalPrice = 0;
+        int totalDiscountedPrice = 0;
+        int totalltem = 0;
+
+        for (CartItem cartItem : cart.getCartItems()) {
+            totalPrice = totalPrice + cartItem.getPrice();
+            totalDiscountedPrice = totalDiscountedPrice + cartItem.getDiscountedPrice();
+            totalltem = totalltem + cartItem.getQuantity();
+
+        }
+
+        cart.setTotalDiscountedPrice(totalDiscountedPrice);
+        cart.setTotalItem(totalltem);
+        cart.setTotalPrice(totalPrice);
+        cart.setDiscounte(totalPrice - totalDiscountedPrice);
+        return cartRepository.save(cart);
     }
 }
