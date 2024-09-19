@@ -15,13 +15,14 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "order_id")
-    private String orderld;
+    private String orderId;
 
     @ManyToOne
     private User user;
@@ -47,7 +48,7 @@ public class Order {
 
     private String orderStatus;
 
-    private int totalltem;
+    private int totalItem;
 
     private LocalDateTime createAt;
 }
