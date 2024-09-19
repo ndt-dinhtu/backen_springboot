@@ -7,21 +7,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem {
+public class CartItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonIgnore
     @ManyToOne
-    private Order order;
+    private Cart cart;
 
     @ManyToOne
     private Product product;
@@ -35,6 +34,4 @@ public class OrderItem {
     private Integer discountedPrice;
 
     private Long userId;
-
-    private LocalDateTime deliveryDate;
 }
