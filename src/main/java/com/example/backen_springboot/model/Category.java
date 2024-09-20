@@ -28,5 +28,7 @@ public class Category {
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
 
+    // 1 -> parent: null
+    // 2 -> parent: 1
     private int level;
 }

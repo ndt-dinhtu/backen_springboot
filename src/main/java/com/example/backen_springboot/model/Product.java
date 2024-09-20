@@ -48,7 +48,7 @@ public class Product {
     @Column(name = "color")
     private String color;
 
-    @Embedded
+//    @Embedded
     @ElementCollection
     @Column(name = "sizes")
     private Set<Size> sizes = new HashSet<>();
@@ -67,7 +67,6 @@ public class Product {
 
     @ManyToOne()
     @JoinColumn(name = "category_id")
-
     private Category category;
 
     private LocalDateTime createdAt;
