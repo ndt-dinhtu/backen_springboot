@@ -1,24 +1,32 @@
 package com.example.backen_springboot.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.experimental.SuperBuilder;
+
+import java.util.*;
+
 
 @Entity
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = false)
+public class User extends BaseEntity implements UserDetails{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
@@ -29,26 +37,44 @@ public class User {
 
     private String email;
 
+    private Long phoneNumber;
+
+    // Role
     private String role;
 
-    private String mobile;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(
+            new SimpleGrantedAuthority(role.toUpperCase())
+        );
+        return authorityList;
+    }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Address> address = new ArrayList<>();
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
-//    @Embedded
-    @ElementCollection
-    @CollectionTable(name = "payment_information", joinColumns = @JoinColumn(name = "user_id"))
-    private List<PaymentInformation> paymentInformation = new ArrayList<>();
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Rating> ratings = new ArrayList<>();
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Review> rivews = new ArrayList<>();
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
-    private LocalDateTime createdAt;
+    
 }
