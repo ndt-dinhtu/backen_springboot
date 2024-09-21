@@ -72,4 +72,14 @@ public class GlobalHandlerException {
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(ExistsHandlerException.class)
+    public ResponseEntity<ApiResponse> handleExistsException(ExistsHandlerException ex){
+        ApiResponse response = ApiResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message("Exists: "+ ex.getMessage())
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
 }

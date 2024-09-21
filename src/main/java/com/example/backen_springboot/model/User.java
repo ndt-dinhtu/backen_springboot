@@ -29,14 +29,13 @@ public class User extends BaseEntity implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String email;
 
     private String password;
 
-    private String email;
-
-
     // Role
     private String role;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

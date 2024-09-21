@@ -25,8 +25,9 @@ public class CorsFilter extends OncePerRequestFilter{
         response.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
         response.addHeader("Access-Control-Expose-Headers", "xsrf-token");
 
-        // Handle preflight request
-        if("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+
+        // Handle preflight requests
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return;
         }

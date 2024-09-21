@@ -6,7 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 
-import com.example.backen_springboot.exception.ResourceNotFoundEx;
+
+import com.example.backen_springboot.exception.ValidParamException;
 import com.example.backen_springboot.model.User;
 
 import io.jsonwebtoken.Claims;
@@ -45,7 +46,7 @@ public class JwtTokenUtil {
                     .compact();
             return token;
         } catch (Exception e) {
-            throw new ResourceNotFoundEx("Cannot create jwt token, error: " + e.getMessage());
+            throw new ValidParamException("Cannot create jwt token, error: " + e.getMessage());
         }
     }
 
@@ -62,7 +63,7 @@ public class JwtTokenUtil {
     }
     private Claims extractAllClaims(String token) {
         try {
-            return Jwts.parserBuilder()
+            return Jwts.parser()
                     .setSigningKey(getSignInKey())
                     .build()
                     .parseClaimsJws(token)
