@@ -35,12 +35,13 @@ public class WebSecurityConfig {
                 // Các request ko yêu cầu xác thực
                 // mẫu pattern: String.format("%s/users/refresh-token", apiPrefix)
                 .requestMatchers(HttpMethod.POST,
-                    "api/v2/auth"
+                    "api/v2/auth/register",
+                    "api/v2/auth/login"
                 ).permitAll()
-                .requestMatchers(HttpMethod.GET,
-                    "api/v2/auth",
-                    "api/v2/auth/hi"
-                ).permitAll()
+                // .requestMatchers(HttpMethod.GET,
+                //     "api/v2/auth",
+                //     "api/v2/auth/hi"
+                // ).permitAll()
                 // .requestMatchers(HttpMethod.DELETE,
                 //     ""
                 // ).permitAll()

@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
-
 @RestController
 @RequestMapping("${api.prefix}/v2/auth")
 @RequiredArgsConstructor
@@ -31,31 +29,34 @@ public class AuthUserController {
     private final AuthService authService;
     private final JwtTokenUtil jwtTokenUtil;
 
-    @PostMapping
-    public String register( @RequestBody UserLoginDTO userLoginDTO)
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody UserLoginDTO userLoginDTO, BindingResult result)
             throws Exception {
+
+        if (result.hasErrors()) {
+            return ResponseData.responseBindingResult(result);
+        }
         User user = authService.createUser(userLoginDTO);
 
-        return jwtTokenUtil.generateToken(user);
+        String token = jwtTokenUtil.generateToken(user);
+
+        return ResponseData.responseOk(
+                "Tạo tài khoản thành công",
+                token);
 
     }
 
-    @GetMapping
-    public String getMethodName() {
-        return "Hello world";
-    }
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody UserLoginDTO userLoginDTO, BindingResult result)
+            throws Exception {
+        if (result.hasErrors()) {
+            return ResponseData.responseBindingResult(result);
 
-    @GetMapping("/hi")
-    public ResponseEntity<ApiResponse> getHi() {
-        ApiResponse apiResponse = ApiResponse.builder()
-                                        .status(HttpStatus.OK.value())
-                                        .message("ok")
-                                        .data("Hi")
-                                        .build();
-        return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(apiResponse);
+        }
+
+        String token = authService.login(userLoginDTO);
+
+        return ResponseData.responseOk("Đăng nhập thành công", token);
     }
-    
 
 }
