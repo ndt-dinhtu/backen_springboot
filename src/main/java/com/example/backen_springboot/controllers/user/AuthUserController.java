@@ -58,5 +58,5 @@ public class AuthUserController {
 
         return ResponseData.responseOk("Đăng nhập thành công", token);
     }
-    
+
 }
