@@ -78,16 +78,16 @@ public class ProductServiceImplementation implements ProductService {
     }
 
     @Override
-    public String deleteProduct(Long productid) throws ProductException {
-        Product product = findProductById(productid);
+    public String deleteProduct(Long productId) throws ProductException {
+        Product product = findProductById(productId);
         product.getSizes().clear();
         productRepository.delete(product);
         return "Product deleted Successfully";
     }
 
     @Override
-    public Product updateProduct(Long productid, Product req) throws ProductException {
-        Product product = findProductById(productid);
+    public Product updateProduct(Long productId, Product req) throws ProductException {
+        Product product = findProductById(productId);
         if (req.getQuantity() != 0) {
             product.setQuantity(req.getQuantity());
         }
