@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -24,37 +25,42 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+
 public class ProductServiceImplementation implements ProductService {
 
+    @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
     private CategoryRepository categoryRepository;
 
     @Override
     public Product createProduct(CreateProductRequest req) {
-        Category topLevel = categoryRepository.findByName(req.getTopLavelCategory());
+        Category topLevel = categoryRepository.findByName(req.getTopLevelCategory());
 
         if (topLevel == null) {
             Category topLavelCategory = new Category();
-            topLavelCategory.setName(req.getTopLavelCategory());
+            topLavelCategory.setName(req.getTopLevelCategory());
             topLavelCategory.setLevel(1);
             topLevel = categoryRepository.save(topLavelCategory);
         }
-        Category secondLevel = categoryRepository.findByNameAndParant(req.getSecondLavelCategory(), topLevel.getName());
+        Category secondLevel = categoryRepository.findByNameAndParant(req.getSecondLevelCategory(), topLevel.getName());
 
         if (secondLevel == null) {
             Category secondLavelCategory = new Category();
-            secondLavelCategory.setName(req.getSecondLavelCategory());
+            secondLavelCategory.setName(req.getSecondLevelCategory());
             secondLavelCategory.setParentCategory(topLevel);
             secondLavelCategory.setLevel(2);
             secondLevel = categoryRepository.save(secondLavelCategory);
         }
-        Category thirdLevel = categoryRepository.findByNameAndParant(req.getThirdLavelCategory(), secondLevel.getName());
+        Category thirdLevel = categoryRepository.findByNameAndParant(req.getThirdLevelCategory(), secondLevel.getName());
 
         if (thirdLevel == null) {
             Category thirdLavelCategory = new Category();
-            thirdLavelCategory.setName(req.getThirdLavelCategory());
+            thirdLavelCategory.setName(req.getThirdLevelCategory());
             thirdLavelCategory.setParentCategory(secondLevel);
             thirdLavelCategory.setLevel(3);
             thirdLevel = categoryRepository.save(thirdLavelCategory);

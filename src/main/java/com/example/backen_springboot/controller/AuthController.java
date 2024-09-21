@@ -2,12 +2,15 @@ package com.example.backen_springboot.controller;
 
 import com.example.backen_springboot.config.JwtProvider;
 import com.example.backen_springboot.exception.UserException;
+import com.example.backen_springboot.model.Cart;
 import com.example.backen_springboot.model.User;
 import com.example.backen_springboot.repository.UserRepository;
 import com.example.backen_springboot.request.LoginRequest;
 import com.example.backen_springboot.response.AuthResponse;
+import com.example.backen_springboot.service.CartService;
 import com.example.backen_springboot.service.CustomeUserServiceImplementation;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,13 +29,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
+    @Autowired
+    private UserRepository userRepository;
 
-
-    private final UserRepository userRepository;
+    @Autowired
     private JwtProvider jwtProvider;
-    private final PasswordEncoder passwordEncoder;
-    private final CustomeUserServiceImplementation customUserService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CustomeUserServiceImplementation customUserService;
+    private CartService cartService;
 
 
     @PostMapping("/signup")
@@ -54,7 +62,8 @@ public class AuthController {
         createdUser.setLastName(lastName);
 
         User savedUser = userRepository.save(createdUser);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(), savedUser.getPassword());
+        Cart cart = cartService.createCart(savedUser);
+        Authentication  authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(), savedUser.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = jwtProvider.generateToken(authentication);

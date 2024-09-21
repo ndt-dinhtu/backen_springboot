@@ -7,17 +7,20 @@ import com.example.backen_springboot.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserServiceImplementation implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
-    private JwtProvider jwtProvider;
+
+    @Autowired
+    private  JwtProvider jwtProvider;
 
     @Override
     public User findUserById(Long userId) throws UserException {
