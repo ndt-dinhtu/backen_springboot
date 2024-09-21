@@ -45,4 +45,31 @@ public class GlobalHandlerException {
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+    @ExceptionHandler(PermisionDenyException.class)
+    public ResponseEntity<ApiResponse> handlePermisionDenyException(PermisionDenyException ex){
+        ApiResponse response = ApiResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .message("Permission is deny: "+ ex.getMessage())
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+    @ExceptionHandler(UnauthorException.class)
+    public ResponseEntity<ApiResponse> handleUnauthorExceptio(UnauthorException ex){
+        ApiResponse response = ApiResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message("Unauthorized: "+ ex.getMessage())
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+    @ExceptionHandler(ValidParamException.class)
+    public ResponseEntity<ApiResponse> handleValidParamException(ValidParamException ex){
+        ApiResponse response = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Valid: "+ ex.getMessage())
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }
