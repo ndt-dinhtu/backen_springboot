@@ -13,13 +13,13 @@ import com.example.backen_springboot.services.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("${api.prefix}/v2/auth")
@@ -57,6 +57,11 @@ public class AuthUserController {
         String token = authService.login(userLoginDTO);
 
         return ResponseData.responseOk("Đăng nhập thành công", token);
+    }
+
+    @GetMapping("/hi")
+    public ResponseEntity<ApiResponse> getHello() {
+        return ResponseData.responseOk("test hello", "Hello");
     }
 
 }
