@@ -58,10 +58,5 @@ public class AuthUserController {
 
         return ResponseData.responseOk("Đăng nhập thành công", token);
     }
-
-    @GetMapping("/hi")
-    public ResponseEntity<ApiResponse> getHello() {
-        return ResponseData.responseOk("test hello", "Hello");
-    }
-
+    
 }

@@ -42,8 +42,7 @@ public class WebSecurityConfig {
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",  // Thêm đường dẫn cho OpenAPI
-                    "/v3/api-docs.yaml",  // Nếu cần thiết
-                    "/api/v2/auth/**"
+                    "/v3/api-docs.yaml"  // Nếu cần thiết
                 ).permitAll()
                 // .requestMatchers(HttpMethod.DELETE,
                 //     ""
