@@ -1,28 +1,23 @@
-package com.example.backen_springboot.model;
-import java.time.LocalDateTime;
+package com.example.backen_springboot.response;
 
-import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-@MappedSuperclass
+
+@Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class BaseEntity {
+public class BaseResponse {
+
     @JsonProperty(namespace = "created_at")
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
     @JsonProperty(namespace = "updated_at")
     private LocalDateTime updatedAt;
 }

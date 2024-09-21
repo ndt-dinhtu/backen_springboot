@@ -38,10 +38,13 @@ public class WebSecurityConfig {
                     "api/v2/auth/register",
                     "api/v2/auth/login"
                 ).permitAll()
-                // .requestMatchers(HttpMethod.GET,
-                //     "api/v2/auth",
-                //     "api/v2/auth/hi"
-                // ).permitAll()
+                .requestMatchers(HttpMethod.GET,
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",  // Thêm đường dẫn cho OpenAPI
+                    "/v3/api-docs.yaml",  // Nếu cần thiết
+                    "/api/v2/auth/**"
+                ).permitAll()
                 // .requestMatchers(HttpMethod.DELETE,
                 //     ""
                 // ).permitAll()
