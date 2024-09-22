@@ -10,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.example.backen_springboot.configuration.exception.CustomAccessDeniedHandler;
+import com.example.backen_springboot.configuration.exception.CustomAuthenticationEntryPoint;
 import com.example.backen_springboot.configuration.filters.JwtTokenFilter;
+import com.example.backen_springboot.exception.PermisionDenyException;
 
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import lombok.AllArgsConstructor;
@@ -23,6 +26,8 @@ import lombok.AllArgsConstructor;
 public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtTokenFilter jwtTokenFilter;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,7 +37,7 @@ public class WebSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
 
-                // Các request ko yêu cầu xác thực
+                //-------------------- Các request ko yêu cầu xác thực
                 // mẫu pattern: String.format("%s/users/refresh-token", apiPrefix)
                 .requestMatchers(HttpMethod.POST,
                     "api/v2/auth/register",
@@ -52,13 +57,13 @@ public class WebSecurityConfig {
                 //     ""
                 // ).permitAll()
 
-                // Các request yêu cầu xác thực admin
-                // .requestMatchers(HttpMethod.POST,
-                //     ""
-                // ).hasRole("ADMIN")
-                // .requestMatchers(HttpMethod.GET,
-                //     ""
-                // ).hasRole("ADMIN")
+                //------------------------- Các request yêu cầu xác thực admin
+                .requestMatchers(HttpMethod.POST,
+                    "api/v1/**"
+                ).hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,
+                    "api/v1/**"
+                ).hasRole("ADMIN")
                 // .requestMatchers(HttpMethod.DELETE,
                 //     ""
                 // ).hasRole("ADMIN")
@@ -66,9 +71,15 @@ public class WebSecurityConfig {
                 //     ""
                 // ).hasRole("ADMIN")
 
-                // Còn lại đều phải xác thực ( kể cả user hay admin)
+                // ---------------------Còn lại đều phải xác thực ( kể cả user hay admin)
                 .anyRequest().authenticated()
-            );
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .accessDeniedHandler(customAccessDeniedHandler)
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+            )
+            
+            ;
         return http.build();
     }
 }

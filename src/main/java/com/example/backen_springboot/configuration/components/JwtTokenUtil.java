@@ -1,18 +1,20 @@
 package com.example.backen_springboot.configuration.components;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-
-
+import com.example.backen_springboot.exception.UnauthorException;
 import com.example.backen_springboot.exception.ValidParamException;
 import com.example.backen_springboot.model.User;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
@@ -24,7 +26,6 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Function;
 
-
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
@@ -34,7 +35,7 @@ public class JwtTokenUtil {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    public String generateToken(User user) throws Exception{
+    public String generateToken(User user) throws Exception {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", user.getEmail());
         try {
@@ -54,6 +55,7 @@ public class JwtTokenUtil {
         byte[] bytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(bytes);
     }
+
     private String generateSecretKey() {
         SecureRandom random = new SecureRandom();
         byte[] keyBytes = new byte[32]; // 256-bit key
@@ -61,15 +63,52 @@ public class JwtTokenUtil {
         String secretKey = Encoders.BASE64.encode(keyBytes);
         return secretKey;
     }
+
     private Claims extractAllClaims(String token) {
+        // try {
+        // return Jwts.parser()
+        // .setSigningKey(getSignInKey())
+        // .build()
+        // .parseClaimsJws(token)
+        // .getBody();
+        // } catch (Exception e) {
+        // throw new UnauthorException("Invalid token" + e.getMessage());
+        // }
+
+        // try {
+        // return Jwts.parser()
+        // .setSigningKey(getSignInKey())
+        // .build()
+        // .parseClaimsJws(token)
+        // .getBody();
+        // } catch (@SuppressWarnings("deprecation") SignatureException e) {
+        // throw new UnauthorException("Invalid token: Signature does not match. " +
+        // e.getMessage());
+        // } catch (MalformedJwtException e) {
+        // throw new UnauthorException("Invalid token: Malformed token. " +
+        // e.getMessage());
+        // } catch (Exception e) {
+        // throw new UnauthorException("Invalid token: " + e.getMessage());
+        // }
+
         try {
             return Jwts.parser()
                     .setSigningKey(getSignInKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
+        } catch (SignatureException e) {
+            throw new UnauthorException("Invalid token: Signature does not match. " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            throw new UnauthorException("Invalid token: Malformed token. " + e.getMessage());
+        } catch (ExpiredJwtException e) {
+            throw new UnauthorException("Invalid token: Token has expired. " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            throw new UnauthorException("Invalid token: Unsupported token. " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new UnauthorException("Invalid token: Token is empty or null. " + e.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException("Invalid token");
+            throw new UnauthorException("Invalid token: " + e.getMessage());
         }
     }
 
@@ -94,4 +133,3 @@ public class JwtTokenUtil {
         return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 }
-

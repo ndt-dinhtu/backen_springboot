@@ -21,7 +21,7 @@ public class BrandResponse extends BaseResponse{
     private String description;
     private String website;
 
-    public static BrandResponse brandResponse(Brand brand) {
+    public static BrandResponse fromBrand (Brand brand) {
         BrandResponse brandResponse = BrandResponse.builder()
                                                     .name(brand.getName())
                                                     .description(brand.getDescription())
