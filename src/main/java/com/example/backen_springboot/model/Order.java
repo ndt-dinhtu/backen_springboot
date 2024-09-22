@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Order")
+@Table(name = "`order`")`
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,5 +50,5 @@ public class Order {
 
     private int totalItem;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 }
