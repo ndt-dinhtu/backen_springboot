@@ -1,6 +1,6 @@
 package com.example.backen_springboot.service;
 
-import com.example.backen_springboot.config.JwtProvider;
+import com.example.backen_springboot.configuration.JwtProvider;
 import com.example.backen_springboot.exception.UserException;
 import com.example.backen_springboot.model.User;
 import com.example.backen_springboot.repository.UserRepository;
