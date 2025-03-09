@@ -28,6 +28,9 @@ public class Address {
     @Column (name = "city")
     private String city;
 
+    @Column (name = "city1")
+    private String city;
+
     @Column(name = "state")
     private String state;
 
